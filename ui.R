@@ -42,14 +42,14 @@ shinyUI(fluidPage(
                              p("The visualised data come from the results of the non-unanimous UN GA votes collected in the", a(href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/12379", "Eric Voeten Dataverse"), ". Resolutions are classified as described in ", a(href="http://ssrn.com/abstract=2111149", "Voeten, E. (2012)"), ". For resolution subtypes, I chose to use only subtypes with the largest resolving power according to (Voeten, 2012)."),
                              p("I chose to use only data from after 2004 (inclusive), i.e. sessions 58-67."),
                              p("The networks are constructed as follows:"),
-                             p("- for each agreement in votes, +1 point is given, for each vote in which one country had a Yes/No vote and the other abstained, either +0.5 or +0.7 points (this is the option ", strong("Abstention vote weight"), ") are given;"),
+                             p("- for each agreement in votes, +1 point is given, for each vote in which one country had a Yes/No vote and the other abstained, either +0.5 or +0.7 points (this is the option ", strong("Abstention vote weight"), ") are given; absences not taken into calculation;"),
                              p("- edges in the quantiles below the cutoff (e.g. the lowest 95%) are dropped (this is the option ", strong("Edge quantile cutoff"), "). Basically, the larger this value, the more edges are dropped.")
                 )), 
              tabPanel("Help - visualisation",
                       column(12,
                              p(strong("Visualisation options")),
                              p("You can hide lone nodes with the option ", strong("Show zero-degree nodes"), "."),
-                             p("You can ", strong("colour"), " the countries by ", a(href="http://www.un.org/depts/DGACM/RegionalGroups.shtml", "UN Regional Groups"), ", by whether they are in the P5, G4 or in the UfC core (as defined ", a(href="https://en.wikipedia.org/wiki/Uniting_for_Consensus", "here"),"), or by membership in the various regional unions. Membership in UNASUR for some Central American countries is superceded by their earlier membership in CARICOM."),
+                             p("You can ", strong("colour"), " the countries by ", a(href="http://www.un.org/depts/DGACM/RegionalGroups.shtml", "UN Regional Groups"), ", by whether they are in the P5, G4, in the UfC core (as defined ", a(href="https://en.wikipedia.org/wiki/Uniting_for_Consensus", "here"),"), in ACT, or by membership in the various regional unions. Membership in UNASUR for some Central American countries is superceded by their earlier membership in CARICOM. Costa Rica is both a part of UfC and of ACT."),
                              br(),
                              p("A fun thing to do is to slide the cutoff from the very left to the very right. Remember to switch on/off the zero-degree nodes!")
                              
@@ -84,7 +84,7 @@ shinyUI(fluidPage(
            column(3,
                   radioButtons("small", "Show zero-degree nodes", choices=c("Yes", "No"), selected="Yes", inline=TRUE),
                   br(),
-                  radioButtons("color", "Colour countries", choices=c("UN Regional Groups", "P5/G4/UfC (core countries only)", "AU/EU/ASEAN/CIS/UNASUR/CARICOM/GCC"), selected="UN Regional Groups")
+                  radioButtons("color", "Colour countries", choices=c("UN Regional Groups", "P5/G4/UfC(core)/ACT", "AU/EU/ASEAN/CIS/UNASUR/CARICOM/GCC"), selected="UN Regional Groups")
            ),
            column(3,
                   radioButtons("quantproperties", "Quantitative properties", choices=c("Nodes with highest degree", "Nodes with highest betweenness", "Communities", "Assortativity"), selected="Nodes with highest degree")

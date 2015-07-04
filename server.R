@@ -22,7 +22,7 @@ net_ec_7 <- read.csv('./data/002_net_ec_0.7.csv')
 
 countries <- read.csv('./data/001_countrydata.csv')
 UNRGmap <- c("dark green", "red", "orange", "purple", "dark blue")
-P5.G4.UfCcoremap <- c("orange", "grey", "red", "brown")
+P5.G4.UfCcoremap <- c("blue", "orange", "grey", "red", "brown")
 AU.EU.ASEANmap <- c("red", "dark green", "pink", "orange", "dark blue", "yellow", "grey", "purple")
 
 
@@ -56,12 +56,12 @@ shinyServer(
     ###creating the colormap
     color <- reactive({switch(input$color, 
                                   "UN Regional Groups"= countries$UNRG, 
-                                  "P5/G4/UfC (core countries only)"= countries$P5.G4.UfCcore,
+                                  "P5/G4/UfC(core)/ACT"= countries$P5.G4.UfCcore,
                                   "AU/EU/ASEAN/CIS/UNASUR/CARICOM/GCC" = countries$AU.EU.ASEAN)})
 
     map <- reactive({switch(input$color, 
                                 "UN Regional Groups"= UNRGmap, 
-                                "P5/G4/UfC (core countries only)"= P5.G4.UfCcoremap,
+                                "P5/G4/UfC(core)/ACT"= P5.G4.UfCcoremap,
                                 "AU/EU/ASEAN/CIS/UNASUR/CARICOM/GCC" = AU.EU.ASEANmap)})
     
     color2 <- reactive({map()[color()]})
