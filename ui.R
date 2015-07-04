@@ -49,7 +49,7 @@ shinyUI(fluidPage(
                       column(12,
                              p(strong("Visualisation options")),
                              p("You can hide lone nodes with the option ", strong("Show zero-degree nodes"), "."),
-                             p("You can ", strong("colour"), " the countries by ", a(href="http://www.un.org/depts/DGACM/RegionalGroups.shtml", "UN Regional Groups"), ", by whether they are in the P5, G4, in the UfC core (as defined ", a(href="https://en.wikipedia.org/wiki/Uniting_for_Consensus", "here"),"), in ACT, or by membership in the various regional unions. Membership in UNASUR for some Central American countries is superceded by their earlier membership in CARICOM. Costa Rica is both a part of UfC and of ACT."),
+                             p("You can ", strong("colour"), " the countries by ", a(href="http://www.un.org/depts/DGACM/RegionalGroups.shtml", "UN Regional Groups"), ", by whether they are in the P5, G4, in the UfC core (as defined ", a(href="https://en.wikipedia.org/wiki/Uniting_for_Consensus", "here"),") or in ACT, or by membership in the various regional unions (Arab League, ASEAN, African Union, CARICOM, CIS, EU or UNASUR). Guyana and Suriname are members of UNASUR and CARICOM; coloured CARICOM. Algieria, Comoros, Djibouti, Egypt, Libya, Mauritania, Somalia, Sudan and Tunisia are members of the Arab League and the African Union; coloured Arab League. Costa Rica is part to UfC and of ACT; coloured ACT."),
                              br(),
                              p("A fun thing to do is to slide the cutoff from the very left to the very right. Remember to switch on/off the zero-degree nodes!")
                              
@@ -84,7 +84,7 @@ shinyUI(fluidPage(
            column(3,
                   radioButtons("small", "Show zero-degree nodes", choices=c("Yes", "No"), selected="Yes", inline=TRUE),
                   br(),
-                  radioButtons("color", "Colour countries", choices=c("UN Regional Groups", "P5/G4/UfC(core)/ACT", "AU/EU/ASEAN/CIS/UNASUR/CARICOM/GCC"), selected="UN Regional Groups")
+                  radioButtons("color", "Colour countries", choices=c("UN Regional Groups", "P5/G4/UfC(core)/ACT", "AU/EU/ASEAN/CIS/UNASUR/CARICOM/AL"), selected="UN Regional Groups")
            ),
            column(3,
                   radioButtons("quantproperties", "Quantitative properties", choices=c("Nodes with highest degree", "Nodes with highest betweenness", "Communities", "Assortativity"), selected="Nodes with highest degree")
