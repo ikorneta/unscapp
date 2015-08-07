@@ -23,14 +23,21 @@ net_ec_7 <- read.csv('./data/002_net_ec_0.7.csv')
 countries <- read.csv('./data/001_countrydata.csv')
 UNRGmap <- c("dark green", "red", "orange", "purple", "dark blue")
 P5.G4.UfCcoremap <- c("blue", "orange", "grey", "red", "brown")
-AU.EU.ASEANmap <- c("yellow", "red", "dark green", "pink", "orange", "dark blue", "grey", "purple")
+AU.EU.ASEANmap <- c("black", "red", "dark green", "pink", "orange", "dark blue", "grey", "purple")
 
 
 # main function
 shinyServer(
   function(input, output) {
     
-    ###picking the right table
+    ###country codes for the help tab
+    output$ccodes1 <- renderTable(countries[1:50,1:2])
+    output$ccodes2 <- renderTable(countries[51:100,1:2])
+    output$ccodes3 <- renderTable(countries[101:150,1:2])
+    output$ccodes4 <- renderTable(countries[151:193,1:2])
+    
+    ###creating the network output
+    #####picking the right table
     net <- reactive({
       if (input$restype=='All' & input$abstvote=="0.5") {net_all_5}
       else if (input$restype=='All' & input$abstvote=="0.7") {net_all_7}
@@ -43,7 +50,7 @@ shinyServer(
     })   
     
     
-    ###creating the amended network
+    #####creating the network amended by the cutoff value
     new_weight <- reactive({ifelse(net()$sim > quantile(net()$sim, as.numeric(input$cutoff)), net()$sim, 0)})
     min_new_weight <- reactive({min(new_weight()[new_weight()>0])})
     max_new_weight <- reactive({max(new_weight()[new_weight()>0])})
@@ -53,7 +60,7 @@ shinyServer(
     net_new2 <- reactive({net_new()[net_new()$sim!=0,]})
     
     
-    ###creating the colormap
+    #####picking the right colour
     color <- reactive({switch(input$color, 
                                   "UN Regional Groups"= countries$UNRG, 
                                   "P5/G4/UfC(core)/ACT"= countries$P5.G4.UfCcore,
@@ -69,15 +76,20 @@ shinyServer(
     countries_new <- reactive({data.frame(cbind(countries, color=color2()))})
 
     
-    #####visualising
+    #####drawing the network
     unscg <- reactive({graph.data.frame(net_new2(), vertices=countries_new(), directed=FALSE)})
     unscg_small <- reactive({induced.subgraph(unscg(), V(unscg())[degree(unscg())>0])})
   
     tempsize <- reactive({switch(input$small, "Yes"= unscg(), "No"= unscg_small())})
-  
     
-    unscg_p <- reactive({plot.igraph(tempsize(), layout=layout.fruchterman.reingold, vertex.size=4, vertex.color= V(tempsize())$color, vertex.label.cex=0.7, vertex.label.family='mono', vertex.label.dist=0.25, vertex.label.color=V(tempsize())$color, edge.width=E(tempsize())$sim, margin=-2)})    
+    l <- reactive({norm_coords(layout.fruchterman.reingold(tempsize()))})
+    
+    unscg_p <- reactive({plot.igraph(tempsize(), rescale=F, layout=1.4*l(), vertex.size=2, vertex.color= V(tempsize())$color, vertex.label.cex=0.8, vertex.label.family='mono', vertex.label.dist=0.25, vertex.label.color=V(tempsize())$color)})    
+
+    #old version as backup
+    #unscg_p <- reactive({plot.igraph(tempsize(), rescale=F, layout=1*l(), vertex.size=4, vertex.color= V(tempsize())$color, vertex.label.cex=0.8, vertex.label.family='mono', vertex.label.dist=0.25, vertex.label.color=V(tempsize())$color, edge.width=E(tempsize())$sim, margin=-2)})    
     output$unscgPlot <- renderPlot({unscg_p()})
+    
     
     
     ###calculating quant properties
@@ -89,20 +101,20 @@ shinyServer(
     unscg_bet<- reactive({betweenness(unscg(), normalized=TRUE)})
     ord_unscg_bet <- reactive({order(unscg_bet(), decreasing=TRUE)})
     
-    ####communities
+    #####communities
     fc <- reactive({fastgreedy.community(unscg())})
     fc_siz <- reactive({sizes(fc())})
     
-    ####assortativity
+    #####assortativity
     ass_UNRG <- reactive({assortativity(unscg(), countries$UNRG)})
     ass_unions <- reactive({assortativity(unscg(), countries$AU.EU.ASEAN)})
     
-    ###endresults
+    #####endresults
     output$unscgQuant0 <- renderText({switch(input$quantproperties,
                                     "Nodes with highest degree"="Nodes with highest degrees:", 
                                     "Nodes with highest betweenness"="Nodes with highest betweenness:", 
                                     "Communities"="Sizes of >1-member communities and some of the members of the largest community:", 
-                                    "Assortativity"="Assortativity wrt UNRG (top) and different regional unions (bottom):"
+                                    "Assortativity"="Assortativity with respect to UN regional groups (top) and different regional economic unions, such as the EU and the AU (bottom):"
                                     )
                              })
     
